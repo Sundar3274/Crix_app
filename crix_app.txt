@@ -1,0 +1,179 @@
+Great! Let’s break down your project into manageable phases, covering everything from requirements to implementation. Here’s a **complete development guide** for building a **Cricket Decision Automation System** using player height and video input.
+
+---
+
+## 📌 Project Title:
+
+**Cricket Decision Automation: No-Ball and Wide Detection Using Player Height & Video**
+
+---
+
+## 📂 Phase 1: Requirements and Planning
+
+### 🎯 Objectives
+
+* Detect waist-high no-balls using player height and video footage.
+* Detect wide balls based on ball position relative to stumps.
+* Output: Visual decision overlay + JSON/CSV report.
+
+### 🛠️ Tools & Libraries
+
+| Component                | Tools/Libraries           |
+| ------------------------ | ------------------------- |
+| Video Handling           | OpenCV                    |
+| Pose Estimation          | MediaPipe or OpenPose     |
+| Ball Detection           | YOLOv5/YOLOv8             |
+| Ball Tracking            | Deep SORT / Kalman Filter |
+| Data Processing          | NumPy, SciPy              |
+| Visualization            | OpenCV, Matplotlib        |
+| App Interface (optional) | Streamlit / Flask         |
+
+---
+
+## 🧱 Phase 2: Project Structure
+
+```plaintext
+cricket-decision-ai/
+├── main.py
+├── video_processor.py
+├── ball_tracker.py
+├── pose_estimator.py
+├── decision_engine.py
+├── utils/
+│   └── calibration.py
+├── test_videos/
+├── outputs/
+│   ├── marked_frames/
+│   └── results.json
+├── requirements.txt
+└── README.md
+```
+
+---
+
+## 🔄 Phase 3: Implementation Phases
+
+### 📍 Step 1: Video Preprocessing
+
+* Extract frames using OpenCV.
+
+```python
+import cv2
+cap = cv2.VideoCapture("sample_delivery.mp4")
+success, frame = cap.read()
+```
+
+---
+
+### 📍 Step 2: Player Pose Estimation
+
+* Use MediaPipe to detect the batter’s keypoints.
+* Calculate waist-level using shoulder and hip coordinates.
+
+```python
+import mediapipe as mp
+mp_pose = mp.solutions.pose
+```
+
+---
+
+### 📍 Step 3: Ball Detection and Tracking
+
+* Detect ball using YOLOv8 (custom-trained if needed).
+* Track ball frame-by-frame using Deep SORT or optical flow.
+
+---
+
+### 📍 Step 4: Real-World Height Scaling
+
+* Convert pixel coordinates to real-world height using player height.
+* Estimate virtual waistline.
+
+```python
+real_height = 1.75  # meters
+pixel_height = shoulders_y - feet_y
+scale = real_height / pixel_height
+waist_y = shoulders_y + (hips_y - shoulders_y) * 0.5
+```
+
+---
+
+### 📍 Step 5: Decision Logic
+
+#### ✅ No-Ball Logic
+
+```python
+if is_full_toss and ball_y < estimated_waist_y:
+    decision = "Waist-high no-ball"
+```
+
+#### ✅ Wide Ball Logic
+
+* Compare ball’s x-coordinate against off-stump + wide marker (\~22 inches).
+
+---
+
+### 📍 Step 6: Output Visualization and Reporting
+
+* Draw waist line, ball path, and decision on frame.
+* Export JSON/CSV report with:
+
+```json
+{
+  "delivery": 1,
+  "type": "full_toss",
+  "ball_height": 1.1,
+  "player_waist": 1.0,
+  "decision": "No Ball"
+}
+```
+
+---
+
+## 🖥️ Phase 4: Optional Web UI
+
+* Use **Streamlit** or **Flask** to:
+
+  * Upload video.
+  * Enter player height.
+  * Show results with overlays and data export.
+
+---
+
+## 🧪 Phase 5: Testing and Validation
+
+* Test with videos of known no-balls and wide balls.
+* Validate pixel-to-real mapping accuracy.
+* Adjust models and thresholds as needed.
+
+---
+
+## 🚀 Phase 6: Enhancements
+
+* Auto detect player height using pose-based proportional scaling.
+* Detect bounce to differentiate bouncers vs full toss.
+* Support for multi-angle camera input.
+* Real-time integration for live matches.
+
+---
+
+## 📄 Deliverables
+
+1. Source code with documentation.
+2. Sample annotated output video/images.
+3. JSON/CSV reports.
+4. (Optional) Web UI for demo.
+
+---
+
+## ✅ Next Steps
+
+Let’s begin with **Step 1: Video Frame Extraction & Pose Estimation**.
+
+Would you like me to provide you a starter script for:
+
+1. **Frame extraction**
+2. **Pose detection using MediaPipe**
+3. **Waistline estimation**
+
+Let me know and I’ll generate the code!
